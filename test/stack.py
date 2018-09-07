@@ -9,6 +9,8 @@ class TestStack(unittest.TestCase):
 
     def test_create(self):
         self.assertTrue(self.stack.is_empty())
+        self.stack.push(1)
+        self.assertFalse(self.stack.is_empty())
 
     def test_push_and_top(self):
         self.stack.push(1)
