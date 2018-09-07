@@ -7,7 +7,7 @@ def validate_addr(addr):
         return False
     host = addr[:index]
     domain = addr[index + 1:]
-    if not(validate_domain(domain)):
+    if not (validate_domain(domain)):
         return False
     return validate_domain(host) or validate_quated_string(host)
 
@@ -22,7 +22,10 @@ def validate_domain(domain):
     # D 4
     if domain.find('..') >= 0:
         return False
-    return re.match("^[a-zA-Z0-9!#$%&'*+-/=?^_`{|}~.]*$", domain) is not None
+    flg = True
+    for s in domain:
+        flg &= s in "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!#$%&'*+-/=?^_`{|}~."
+    return flg is True
 
 
 def validate_quated_string(quated_str):
@@ -33,8 +36,14 @@ def validate_quated_string(quated_str):
     if quated_str[0] != '"' or quated_str[-1] != '"':
         return False
     quated_str = quated_str[1:-1]
-    if re.match(
-            "^[a-zA-Z0-9!#$%&'*+\-/=?^_`{\|}~\(\),.:;<>@\[\]\"\\\\]*$",
-            quated_str) is None:
-        return False
-    return True
+    flg = True
+    prev_bs = False
+    for s in quated_str:
+        flg &= s in "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!#$%&'*+-/=?^_`{|}~(),.:;<>@[]\"\\"
+        if prev_bs:
+            flg &= s == '"' or s == "\\"
+            prev_bs = False
+        else:
+            flg &= s != '"'
+            prev_bs = s == "\\"
+    return flg is True
