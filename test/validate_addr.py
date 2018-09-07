@@ -3,7 +3,6 @@ from validate_addr import validate_addr, validate_domain, validate_quated_string
 
 
 class TestValidateAddr(unittest.TestCase):
-
     def test_validate_addr(self):
         ok_cases = [
             "abc@example.com",
@@ -20,7 +19,7 @@ class TestValidateAddr(unittest.TestCase):
         ok_cases = [
             "example.com",
             #
-            "!#$%&'*+-/=?^_`{|}~.a",  #D1
+            "!#$%&'*+-/=?^_`{|}~.a",  # D1
         ]
         ng_cases = [
             "",  # D5
@@ -38,12 +37,15 @@ class TestValidateAddr(unittest.TestCase):
 
     def test_validate_quated_string(self):
         ok_cases = [
-            "abc",
+            '"abc"',
         ]
         ng_cases = [
-            "a..bc",
+            'aaa"',  # LO1
+            '"aaa',  # LQ2
+            '"😄"',  # LQ3
+            '"'  # LQ5
         ]
         for case in ok_cases:
-            self.assertTrue(validate_quated_string(case))
+            self.assertTrue(validate_quated_string(case), case)
         for case in ng_cases:
-            self.assertFalse(validate_quated_string(case))
+            self.assertFalse(validate_quated_string(case), case)
